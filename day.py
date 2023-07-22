@@ -1,20 +1,16 @@
+from dataclasses import dataclass, field
 from pill import Pill
+from datetime import datetime
 
+@dataclass(order=True)
+class Day:
+    sort_index: int = field(init=False, repr=False)
+    date: datetime
+    pills: list[Pill]
+    note: str = None
 
-class day:
-    def __init__(self, date, pill: Pill, note: str = None):
-        self.date = date
-        self.pill = pill
-        self.note = note
-
-    def change_date(self, date):
-        self.date = date
-
-    def change_pill(self, pill: Pill):
-        self.pill = pill
-
-    def change_note(self, note: str):
-        self.note = note
+    def __post_init__(self):
+        self.sort_index = self.date
 
     def __str__(self):
-        return f"Date: {self.date}, Pill: {self.pill}, Note: {self.note}"
+        return f"Date: {self.date}, Pills: {self.pills}, Note: {self.note}"
