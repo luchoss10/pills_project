@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Pill:
-
     name: str
     measure: int
     description: str = None
@@ -22,7 +22,7 @@ class Pill:
 
     def change_frequency_day(self, frequency_day: int):
         self.frequency_day = frequency_day
-    
+
     def reset_frequency_day(self):
         self.frequency_day = 1
 

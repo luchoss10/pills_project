@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import List
+
 from day import DayRecord
 from pill import Pill
+
 
 @dataclass
 class User:
@@ -10,13 +12,13 @@ class User:
     _streak_days: int = 0
     pills: List[Pill] = None
     history: List[DayRecord] = None
-    
+
     def change_name(self, name: str):
         self.name = name
-    
+
     def change_age(self, age: int):
         self.age = age
-    
+
     def add_streak_day(self):
         self._streak_days += 1
 
@@ -25,12 +27,12 @@ class User:
 
     def get_streak_days(self):
         return self._streak_days
-    
+
     def add_day_record(self, days_record: DayRecord):
         if not self.history:
             self.history = []
         self.history.append(days_record)
-    
+
     def get_history(self):
         return self.history
 
@@ -38,13 +40,12 @@ class User:
         if not self.pills:
             self.pills = []
         self.pills.append(pill)
-    
+
     def delete_pill(self, pill: Pill):
         self.pills.remove(pill)
-    
+
     def get_pills(self):
         return self.pills
-    
 
     def __str__(self):
         return f"Name: {self.name}, Age: {self.age}, Streak days: {self._streak_days}"

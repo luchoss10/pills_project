@@ -1,11 +1,12 @@
-from pill import Pill
+from dataclasses import dataclass
 from datetime import datetime
 from typing import List
-from dataclasses import dataclass
+
+from pill import Pill
+
 
 @dataclass
 class DayRecord:
-
     date: datetime
     pill_list: List[Pill]
     note: str = None

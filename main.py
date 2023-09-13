@@ -1,18 +1,18 @@
-from pill import Pill
 from day import DayRecord
+from pill import Pill
 from user import User
 
+from storage_modules import json_file_storage
 
 
-def start_app_protocol()-> User:
-
-    print("-"*50)
+def start_app_protocol() -> User:
+    print("-" * 50)
     print(f"Hello Welcome to Pill Tracker")
-    print("-"*50)
+    print("-" * 50)
     print("Pill Tracker is a program to help you keep track of your pills")
     print("You can gestion your pills and your daily register")
-    
-    print("-"*50)
+
+    print("-" * 50)
     print("Is your first time using Pill Tracker?")
 
     option = input("Yes/No: ")
@@ -22,26 +22,27 @@ def start_app_protocol()-> User:
         age = input("Please enter your age: ")
         user = User(name, age)
         print(f"Welcome {user.name}!")
+
         # save_user(user)
     elif option.lower() == "no":
         print("Welcome back!")
-        #Implementate a search user function
+        # Implementate a search user function
         # user =  get_user()
-        #user = User(name, age)
-    
+        # user = User(name, age)
+
     return user
 
-def manage_pills(user: User):
 
+def manage_pills(user: User):
     while True:
-        print("-"*50)
+        print("-" * 50)
         print("Please select an option")
         print("1. Add a new pill")
         print("2. Delete a pill")
         print("3. Modify a pill")
         print("4. Show all pills")
         print("5. Exit")
-        
+
         option = input("Option: ")
 
         if option == "1":
@@ -87,17 +88,18 @@ def manage_pills(user: User):
             break
         else:
             print("Please select a valid option")
-    
+
+
 def manage_daily_register(user: User):
     while True:
-        print("-"*50)
+        print("-" * 50)
         print("Please select an option")
         print("1. Add a new day register")
         print("2. Delete a day register")
         print("3. Modify a day register")
         print("4. Show all day register")
         print("5. Exit")
-        
+
         option = input("Option: ")
 
         if option == "1":
@@ -161,19 +163,16 @@ def manage_daily_register(user: User):
             break
         else:
             print("Please select a valid option")
-        
 
 
 def main():
-    
     pill_l = Pill("Losartan", 50)
     pill_a = Pill("Atorvastatina", 20, "Tomar dia de por medio")
 
     user = start_app_protocol()
-    
-    while True:
 
-        print("-"*50)
+    while True:
+        print("-" * 50)
         print("Please select an option")
         print("1. Manage pills")
         print("2. Manage daily register")
@@ -191,16 +190,13 @@ def main():
         else:
             print("Please select a valid option")
 
-
-
-
     record_history = []
 
-    for i in range(1,11):
+    for i in range(1, 11):
         record_history.append(DayRecord(f"2021-09-0{i}", [pill_l, pill_a]))
 
-
     print(record_history)
+
 
 if __name__ == "__main__":
     main()
