@@ -1,9 +1,31 @@
-from day import DayRecord
-from pill import Pill
-from user import User
+from enum import Enum
+from models.day import DayRecord
+from models.pill import Pill
+from models.user import User
 
 from storage_modules import json_file_storage
 
+class SelectOption(Enum):
+    YES = 1
+    NO = 2
+    EXIT = 3
+
+class MenuOptions(Enum):
+    MANAGE_PILLS = 1
+    MANAGE_DAY_RECORD = 2
+
+class ManagePillsOptions(Enum):
+    ADD_PILL = 1
+    DELETE_PILL = 2
+    MODIFY_PILL = 3
+    SHOW_PILLS = 4
+
+class ManageDayRecordOptions(Enum):
+    ADD_DAY_RECORD = 1
+    DELETE_DAY_RECORD = 2
+    MODIFY_DAY_RECORD = 3
+    SHOW_DAY_RECORD = 4
+    CLOSE = 5
 
 def start_app_protocol() -> User:
     print("-" * 50)
@@ -15,22 +37,31 @@ def start_app_protocol() -> User:
     print("-" * 50)
     print("Is your first time using Pill Tracker?")
 
-    option = input("Yes/No: ")
-    if option.lower() == "yes":
-        print("Let's start by creating your user profile!")
-        name = input("Please enter your name: ")
-        age = input("Please enter your age: ")
-        user = User(name, age)
-        print(f"Welcome {user.name}!")
 
-        # save_user(user)
-    elif option.lower() == "no":
+    while True:        
+        option = input("Yes/No: ")
+        if option.lower() in ["yes", "no"]:
+            break
+        print("Please select a valid option")
+
+    
+    user = User("Generic User", 99)
+    
+    if not option.lower() == "yes":
         print("Welcome back!")
         # Implementate a search user function
         # user =  get_user()
         # user = User(name, age)
+        return user
 
-    return user
+    if option.lower() == "yes":
+        print("Let's start by creating your user profile!")
+        name = input("Please enter your name: ")
+        age = int(input("Please enter your age: "))
+        user = User(name, age)
+        print(f"Welcome {user.name}!")
+        
+        return user
 
 
 def manage_pills(user: User):
@@ -174,17 +205,18 @@ def main():
     while True:
         print("-" * 50)
         print("Please select an option")
-        print("1. Manage pills")
-        print("2. Manage daily register")
-        print("3. Exit")
+        print(f"{MenuOptions.MANAGE_PILLS.value}. Manage pills")
+        print(f"{MenuOptions.MANAGE_DAY_RECORD.value}. Manage daily register")
+        print(f"{SelectOption.EXIT.value}. Exit")
 
         option = input("Option: ")
+        print(f"Option selected: {option}")
 
-        if option == "1":
+        if option == MenuOptions.MANAGE_PILLS.value:
             manage_pills(user)
-        elif option == "2":
+        elif option == MenuOptions.MANAGE_DAY_RECORD.value:
             manage_daily_register(user)
-        elif option == "3":
+        elif option == SelectOption.EXIT.value:
             print("Thanks for using Pill Tracker")
             break
         else:

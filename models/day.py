@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
-from pill import Pill
-
+from models.pill import Pill
 
 @dataclass
 class DayRecord:
@@ -21,7 +20,7 @@ class DayRecord:
     def change_date(self, date):
         self.date = date
 
-    def change_pill_list(self, pill_list: Pill):
+    def change_pill_list(self, pill_list: List[Pill]):
         self.pill_list = pill_list
 
     def change_note(self, note: str):

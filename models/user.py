@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
-from day import DayRecord
-from pill import Pill
+from models.day import DayRecord
+from models.pill import Pill
 
 
 @dataclass
