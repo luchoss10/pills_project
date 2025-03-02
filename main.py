@@ -1,7 +1,10 @@
 from enum import Enum
+import re
+
 from models.day import DayRecord
 from models.pill import Pill
 from models.user import User
+
 
 from storage_modules import json_file_storage
 
@@ -31,6 +34,28 @@ class ManageDayRecordOptions(Enum):
     MODIFY_DAY_RECORD = 3
     SHOW_DAY_RECORD = 4
     CLOSE = 5
+
+def input_int(message: str, min_value: int, max_value: int) -> int:
+    while True:
+        try:
+            option = int(input(message))
+            if option >= min_value and option <= max_value:
+                return option
+            logger.info("Please select a valid option")
+        except ValueError:
+            logger.info("Please select a valid option")
+
+def input_date(message: str) -> str:
+    while True:
+        date = input(message)
+        if re.match(r"\d{4}-\d{2}-\d{2}", date):
+            return date
+        logger.info("Please enter a valid date")
+
+def show_menu(options: list[str]) -> int:
+    for i, option in enumerate(options):
+        logger.info(f"{i + 1}. {option}")
+    return input_int("Option: ", 1, len(options))
 
 def start_app_protocol() -> User:
     logger.info("-" * 50)
@@ -62,7 +87,7 @@ def start_app_protocol() -> User:
     if option.lower() == "yes":
         logger.info("Let's start by creating your user profile!")
         name = input("Please enter your name: ")
-        age = int(input("Please enter your age: "))
+        age = input_int("Please enter your age: ", 0, 120)
         user = User(name, age)
         logger.info(f"Welcome {user.name}!")
         
@@ -77,9 +102,9 @@ def manage_pills(user: User):
         logger.info("2. Delete a pill")
         logger.info("3. Modify a pill")
         logger.info("4. Show all pills")
-        logger.info("5. Exit")
+        logger.info("5. Return to main menu")
 
-        option = int(input("Option: "))
+        option = input_int("Option: ", ManagePillsOptions.ADD_PILL.value, ManagePillsOptions.CLOSE.value)
 
         if option == ManagePillsOptions.ADD_PILL.value:
             logger.info("Please enter the pill information")
@@ -101,8 +126,8 @@ def manage_pills(user: User):
             pills = user.get_pills()
             for i, pill in enumerate(pills):
                 logger.info(f"{i}. {pill.name}")
-            option = input("Option: ")
-            pill = pills[int(option)]
+            option = input_int("Option: ", 0, len(pills) - 1)
+            pill = pills[option]
             user.delete_pill(pill)
             logger.info("Please enter the new pill information")
             name = input("Name: ")
@@ -134,13 +159,13 @@ def manage_daily_register(user: User):
         logger.info(f"{ManageDayRecordOptions.DELETE_DAY_RECORD.value}. Delete a day register")
         logger.info(f"{ManageDayRecordOptions.MODIFY_DAY_RECORD.value}. Modify a day register")
         logger.info(f"{ManageDayRecordOptions.SHOW_DAY_RECORD.value}. Show all day register")
-        logger.info(f"{ManageDayRecordOptions.CLOSE.value}. Exit")
+        logger.info(f"{ManageDayRecordOptions.CLOSE.value}. Return to main menu")
 
-        option = int(input("Option: "))
+        option = input_int("Option: ", ManagePillsOptions.ADD_PILL.value, ManagePillsOptions.CLOSE.value)
 
         if option == ManageDayRecordOptions.ADD_DAY_RECORD.value:
             logger.info("Please enter the day register information")
-            date = input("Date (form YYYY-MM-DD): ")
+            date = input_date("Date (form YYYY-MM-DD):")
             note = input("Note: ")
             pill_list = []
             while True:
@@ -148,7 +173,7 @@ def manage_daily_register(user: User):
                 pills = user.get_pills()
                 for i, pill in enumerate(pills):
                     logger.info(f"{i}. {pill.name}")
-                option = int(input("Option: "))
+                option = input_int("Option: ", 0, len(pills) - 1)
                 pill_list.append(pills[option])
                 logger.info("Do you want to add another pill?")
                 option = input("Yes/No: ")
@@ -162,18 +187,18 @@ def manage_daily_register(user: User):
             # split_step = 10
             for i, day_record in enumerate(day_records):
                 logger.info(f"{i}. {day_record.date}")
-            option = input("Option: ")
-            user.delete_day_record(day_records[int(option)])
+            option = input_int("Option: ", 0, len(day_records) - 1)
+            user.delete_day_record(day_records[option])
         elif option == ManageDayRecordOptions.MODIFY_DAY_RECORD.value:
             logger.info("Please select the day register you want to modify")
             day_records = user.get_history()
             for i, day_record in enumerate(day_records):
                 logger.info(f"{i}. {day_record.date}")
-            option = input("Option: ")
-            day_record = day_records[int(option)]
+            option = input_int("Option: ", 0, len(day_records) - 1)
+            day_record = day_records[option]
             user.delete_day_record(day_record)
             logger.info("Please enter the new day register information")
-            date = input("Date (form YYYY-MM-DD):")
+            date = input_date("Date (form YYYY-MM-DD):")
             note = input("Note: ")
             pill_list = []
             while True:
@@ -181,8 +206,8 @@ def manage_daily_register(user: User):
                 pills = user.get_pills()
                 for i, pill in enumerate(pills):
                     logger.info(f"{i}. {pill.name}")
-                option = input("Option: ")
-                pill_list.append(pills[int(option)])
+                option = input_int("Option: ", 0, len(pills) - 1)
+                pill_list.append(pills[option])
                 logger.info("Do you want to add another pill?")
                 option = input("Yes/No: ")
                 if option.lower() == "no":
@@ -214,7 +239,7 @@ def main():
         logger.info(f"{MenuOptions.MANAGE_DAY_RECORD.value}. Manage daily register")
         logger.info(f"{SelectOption.EXIT.value}. Exit")
 
-        option = int(input("Option: "))
+        option = input_int("Option: ", MenuOptions.MANAGE_PILLS.value, SelectOption.EXIT.value)
         logger.info(f"Option selected: {option}")
 
         if option == MenuOptions.MANAGE_PILLS.value:
