@@ -10,7 +10,7 @@ class Sqlite3Storage(DataSaveInterface):
         self.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 age INTEGER NOT NULL
             )
@@ -19,7 +19,7 @@ class Sqlite3Storage(DataSaveInterface):
         self.cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS pills (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
                 name TEXT NOT NULL,
                 measure TEXT NOT NULL,
@@ -40,6 +40,7 @@ class Sqlite3Storage(DataSaveInterface):
         for user_id, name, age in self.cursor.fetchall():
             users.append({"id": user_id, "name": name, "age": age})
         self.cursor.execute("SELECT * FROM pills")
+
         for pill_id, user_id, name, measure, description, frequency_day in self.cursor.fetchall():
             pills.append(
                 {
@@ -53,18 +54,28 @@ class Sqlite3Storage(DataSaveInterface):
             )
         return users, pills
 
-    def save(self, data:str):
+    def save(self, data: dict[str, list[dict]]):
         """Save raw data."""
-        for user in data["users"]:
+
+        if not isinstance(data, dict):
+            raise ValueError("Data must be a dictionary with 'users' and 'pills' keys.")
+        
+        # Only insert the last user (the new one)
+        if data.get("users"):
+            user = data["users"][-1]
             self.cursor.execute(
-                "INSERT INTO users (id, name, age) VALUES (?, ?, ?)",
-                (user["id"], user["name"], user["age"]),
+                "INSERT INTO users (name, age) VALUES (?, ?)",
+                (user["name"], user["age"]),
             )
+            self.connection.commit()
+
+        if not data.get("pills"):
+            return
+
         for pill in data["pills"]:
             self.cursor.execute(
-                "INSERT INTO pills (id, user_id, name, measure, description, frequency_day) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO pills (user_id, name, measure, description, frequency_day) VALUES (?, ?, ?, ?, ?, ?)",
                 (
-                    pill["id"],
                     pill["user_id"],
                     pill["name"],
                     pill["measure"],
